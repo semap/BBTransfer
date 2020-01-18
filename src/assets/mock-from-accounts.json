@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "id": "48b7b61e-3df1-44c6-b81e-87caf0986c6a",
+      "name": "Free Checking",
+      "accountNumber": "8373783739073",
+      "balance": 7820.93
+    },
+    {
+      "id": "df74e772-1de1-47e4-a7e6-a8653b8b91c9",
+      "name": "Premium Saving",
+      "accountNumber": "937263846247",
+      "balance": 3707.25
+    },
+    {
+      "id": "c2c904c7-06ea-4c3f-81ca-6cd11a50efbc",
+      "name": "Credit Line",
+      "accountNumber": "743840083633",
+      "balance": 5000.00
+    }
+  ]
+}

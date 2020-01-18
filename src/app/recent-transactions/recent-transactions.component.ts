@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {TransferService} from '../services/transfer.service';
 
 @Component({
   selector: 'app-recent-transactions',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RecentTransactionsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private transferService: TransferService) { }
 
+  get transactions$() {
+    return this.transferService.transactions$;
+  }
   ngOnInit() {
   }
-
 }
