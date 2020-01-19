@@ -40,7 +40,7 @@ export class TransferService {
     return this.http.get<TransactionsData>('/assets/mock-transactions.json')
       .pipe(
         map(transactionData => transactionData.data),
-        map( transactions => transactions.map(tx => ({...tx, amount: parseFloat(String(tx.amount))})))
+        map( transactions => transactions.map(tx => ({...tx, amount: parseFloat(String(tx.amount)) * -1})))
       );
   }
 
@@ -70,7 +70,7 @@ export class TransferService {
   private toTransaction(transferRequest: TransferRequest): Transaction {
     const payee: Payee = this.findPayee(transferRequest.payeeId);
     return {
-      amount: transferRequest.amount,
+      amount: transferRequest.amount * -1,
       categoryCode: payee.categoryCode,
       merchant: payee.merchant,
       merchantLogo: payee.merchantLogo,

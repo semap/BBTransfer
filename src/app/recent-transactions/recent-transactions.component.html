@@ -6,7 +6,7 @@
   <mat-icon class="app-filter-clear" matSuffix *ngIf="searchText.value" (click)="searchText.reset()">close</mat-icon>
 </mat-form-field>
 
-<div matSort matSortActive="merchant" matSortDirection="asc" matSortDisableClear>
+<div matSort>
   <tr>
     <button mat-sort-header = "transactionDate">DATE</button>
     <button mat-sort-header = "merchant">BENEFICIARY</button>
@@ -15,16 +15,18 @@
 </div>
 <table mat-table>
   <tr *ngFor = "let transaction of transactions$ | async">
-    <td mat-cell
-        class="app-column-date"
-        [style.border-left-color]="transaction.categoryCode">
+    <td mat-cell class="app-column-date" [style.border-left-color]="transaction.categoryCode">
       {{transaction.transactionDate | date: 'MMM dd'}}
     </td>
     <td mat-cell class="app-column-logo">
       <img class="app-logo" [src]="transaction.merchantLogo"/>
     </td>
-    <td>{{transaction.merchant}}</td>
-    <td>{{transaction.amount * -1 | currency }}</td>
+    <td mat-cell class="app-column-logo">
+      {{transaction.merchant}}
+    </td>
+    <td mat-cell class="app-column-amount">
+      {{transaction.amount | currency }}
+    </td>
   </tr>
 </table>
 

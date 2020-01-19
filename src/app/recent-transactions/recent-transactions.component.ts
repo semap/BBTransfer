@@ -28,22 +28,24 @@ export class RecentTransactionsComponent implements AfterViewInit {
       this.sort.sortChange.asObservable().pipe(startWith(null)))
     .pipe(
       map(([transactions, text, sort]) =>
-        this.filterTransactions(transactions, text).sort(this.createComparator(sort))
+        [...this.filterTransactions(transactions, text)].sort(this.createComparator(sort))
       ),
     );
   }
 
   private filterTransactions(transactions: Transaction[], text: string): Transaction[] {
     if (!text) { return transactions; }
+    text = text.toLowerCase();
     return transactions.filter( // TODO: use RegExp
-      transaction => transaction.merchant.includes(text) || transaction.transactionType.includes(text)
+      transaction => transaction.merchant.toLowerCase().includes(text)
     );
   }
 
   private createComparator(sort: Sort): (a: Transaction, b: Transaction) => number {
     if (!sort) { return (a, b) => 0; }
+    const direction = (sort.direction === `asc` ? 1 : (sort.direction === 'desc') ? -1 : 0);
     return (transaction1, transaction2) => {
-      return (transaction1[sort.active] < transaction2[sort.active] ? -1 : 1) * (sort.direction === `asc` ? 1 : -1);
+      return (transaction1[sort.active] < transaction2[sort.active] ? -1 : 1) * direction;
     };
   }
 }
