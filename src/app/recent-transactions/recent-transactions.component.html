@@ -1,4 +1,11 @@
 <h2>Transactions</h2>
+
+<mat-form-field>
+  <mat-label>Search</mat-label>
+  <input matInput [formControl]="searchText" placeholder="Search by typing..."/>
+  <mat-icon class="app-filter-clear" matSuffix *ngIf="searchText.value" (click)="searchText.reset()">close</mat-icon>
+</mat-form-field>
+
 <ul class="heroes">
   <li *ngFor="let transaction of transactions$ | async">
     <span class="badge">{{transaction.merchant}}</span> {{transaction.amount}}
