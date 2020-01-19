@@ -35,9 +35,8 @@ export class RecentTransactionsComponent implements AfterViewInit {
 
   private filterTransactions(transactions: Transaction[], text: string): Transaction[] {
     if (!text) { return transactions; }
-    const regex = new RegExp(`${text}`, 'i');
-    return transactions.filter(
-      transaction => regex.test(transaction.merchant) || regex.test(transaction.transactionType)
+    return transactions.filter( // TODO: use RegExp
+      transaction => transaction.merchant.includes(text) || transaction.transactionType.includes(text)
     );
   }
 
