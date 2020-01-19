@@ -1,1 +1,28 @@
-<p>make-transfer works!</p>
+
+<ul class="heroes">
+  <li *ngFor="let account of fromAccounts$ | async">
+    <span class="badge">{{account.name}}</span>{{account.balance}}
+  </li>
+</ul>
+
+<ul class="heroes">
+  <li *ngFor="let payee of payees$ | async">
+    <span class="badge">{{payee.merchant}}</span>
+  </li>
+</ul>
+
+<form [formGroup]="transferForm" (ngSubmit)="onSubmit()">
+
+  <label>
+    First Name:
+    <input type="text" formControlName="fromAccount">
+  </label>
+
+  <label>
+    Last Name:
+    <input type="text" formControlName="payeeAccount">
+  </label>
+
+  <button type="submit">Submit</button>
+
+</form>

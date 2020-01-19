@@ -31,7 +31,7 @@ export class TransferService {
   createTransaction(transferRequest: TransferRequest): Observable<Transaction> {
     return of(transferRequest)
       .pipe(
-        map(this.toTransaction),
+        map(req => this.toTransaction(req)),
         tap(transaction => this.updateAccountsAndTransactions(transaction, transferRequest.fromAccountId))
       );
   }
@@ -67,15 +67,14 @@ export class TransferService {
   }
 
   private toTransaction(transferRequest: TransferRequest): Transaction {
-    const fromAccount = this.findFromAccount(transferRequest.fromAccountId);
-    const payee = this.findPayee(transferRequest.payeeId);
+    const payee: Payee = this.findPayee(transferRequest.payeeId);
     return {
       amount: transferRequest.amount.toString(),
       categoryCode: payee.categoryCode,
       merchant: payee.merchant,
       merchantLogo: payee.merchantLogo,
       transactionDate: new Date().getTime(),
-      transactionType: ''
+      transactionType: 'Online Transfer'
     };
   }
 
@@ -87,10 +86,6 @@ export class TransferService {
 
     const newTransactions = [transaction].concat(this.transactions.value);
     this.transactions.next(newTransactions);
-  }
-
-  private findFromAccount(id: string): BankAccount {
-    return this.fromAccounts.value.find(acc => acc.id === id);
   }
 
   private findPayee(id: string): Payee {
