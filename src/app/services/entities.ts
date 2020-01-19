@@ -3,7 +3,7 @@ export interface TransactionsData {
 }
 
 export interface Transaction {
-  amount: string;
+  amount: number;
   categoryCode: string;
   merchant: string;
   merchantLogo: string;

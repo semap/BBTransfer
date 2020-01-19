@@ -7,7 +7,15 @@ import { MakeTransferComponent } from './make-transfer/make-transfer.component';
 import { RecentTransactionsComponent } from './recent-transactions/recent-transactions.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatButtonModule, MatIconModule, MatInputModule, MatSelectModule, MatToolbarModule} from '@angular/material';
+import {
+  MatButtonModule,
+  MatButtonToggleModule,
+  MatIconModule,
+  MatInputModule,
+  MatSelectModule,
+  MatSortModule,
+  MatToolbarModule
+} from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -24,7 +32,9 @@ import {MatButtonModule, MatIconModule, MatInputModule, MatSelectModule, MatTool
     MatButtonModule,
     MatSelectModule,
     MatIconModule,
-    MatToolbarModule
+    MatSortModule,
+    MatToolbarModule,
+    MatButtonToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

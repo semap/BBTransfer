@@ -1,36 +1,50 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {TransferService} from '../services/transfer.service';
 import {FormControl} from '@angular/forms';
 import {combineLatest, Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {Transaction} from '../services/entities';
+import {MatSort, Sort} from '@angular/material';
 
 @Component({
   selector: 'app-recent-transactions',
   templateUrl: './recent-transactions.component.html',
   styleUrls: ['./recent-transactions.component.scss']
 })
-export class RecentTransactionsComponent implements OnInit {
+export class RecentTransactionsComponent implements AfterViewInit {
   searchText: FormControl = new FormControl('');
 
-  readonly transactions$ = combineLatest(
-      this.transferService.transactions$,
-      this.searchText.valueChanges.pipe(startWith('')))
-    .pipe(
-      map(([transactions, text]) => this.filterTransactions(transactions, text))
-    );
+  @ViewChild(MatSort, {static: false})
+  sort: MatSort;
+
+  transactions$: Observable<Transaction[]>;
 
   constructor(private transferService: TransferService) {}
 
-  ngOnInit() {
+  ngAfterViewInit(): void {
+    this.transactions$ = combineLatest(
+      this.transferService.transactions$,
+      this.searchText.valueChanges.pipe(startWith('')),
+      this.sort.sortChange.asObservable().pipe(startWith(null)))
+    .pipe(
+      map(([transactions, text, sort]) =>
+        this.filterTransactions(transactions, text).sort(this.createComparator(sort))
+      ),
+    );
   }
-  //
+
   private filterTransactions(transactions: Transaction[], text: string): Transaction[] {
     if (!text) { return transactions; }
-
     const regex = new RegExp(`${text}`, 'i');
     return transactions.filter(
       transaction => regex.test(transaction.merchant) || regex.test(transaction.transactionType)
     );
+  }
+
+  private createComparator(sort: Sort): (a: Transaction, b: Transaction) => number {
+    if (!sort) { return (a, b) => 0; }
+    return (transaction1, transaction2) => {
+      return (transaction1[sort.active] < transaction2[sort.active] ? -1 : 1) * (sort.direction === `asc` ? 1 : -1);
+    };
   }
 }
