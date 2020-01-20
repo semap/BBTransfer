@@ -1,11 +1,10 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, FormGroupDirective, NgForm, ValidationErrors, Validators} from '@angular/forms';
 import {BankAccount, Payee, TransferRequest} from '../services/entities';
 import {TransferService} from '../services/transfer.service';
 import {Unsubscribable} from 'rxjs/src/internal/types';
-import {MatHorizontalStepper, MatStepper} from '@angular/material';
-import {flatMap, map, switchMap, tap} from 'rxjs/operators';
-import {Observable, combineLatest} from 'rxjs';
+import {ErrorStateMatcher, MatHorizontalStepper} from '@angular/material';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-make-transfer',
@@ -14,12 +13,6 @@ import {Observable, combineLatest} from 'rxjs';
 })
 export class MakeTransferComponent implements OnDestroy {
   title = 'Make a transfer';
-  transferForm = new FormGroup({
-    fromAccount: new FormControl(),
-    payee: new FormControl(),
-    amount: new FormControl(),
-  });
-
   fromAccounts$ = this.transferService.fromAccounts$
     .pipe(tap( accs => this.setDefaultFromAccount(accs)));
   payees$ = this.transferService.payees$
@@ -28,21 +21,28 @@ export class MakeTransferComponent implements OnDestroy {
   @ViewChild(MatHorizontalStepper, {static: false})
   stepper: MatHorizontalStepper;
 
+  matcher = new AmountErrorMatcher();
+
+  transferForm = new FormGroup({
+    fromAccount: new FormControl(undefined, [Validators.required]),
+    payee: new FormControl(undefined, [Validators.required]),
+    amount: new FormControl(undefined, [Validators.required, Validators.min(0.01), Validators.pattern('^[-]?[0-9]+(.[0-9]{0,2})?$')]),
+  }, {
+    validators: form => this.validateBalance(form.get('fromAccount').value , form.get('amount').value)
+  });
+
   private createTransferSubscription: Unsubscribable;
 
   constructor(private transferService: TransferService) { }
 
-  get fromAccount(): BankAccount {
-    return this.transferForm.get('fromAccount').value;
-  }
+  get fromAccountControl() { return this.transferForm.controls.fromAccount; }
+  get fromAccount(): BankAccount { return this.fromAccountControl.value; }
 
-  get payee(): Payee {
-    return this.transferForm.get('payee').value;
-  }
+  get payeeControl() { return this.transferForm.controls.payee; }
+  get payee(): Payee { return this.payeeControl.value; }
 
-  get amount(): number {
-    return this.transferForm.get('amount').value;
-  }
+  get amountControl() { return this.transferForm.controls.amount; }
+  get amount(): number { return this.amountControl.value; }
 
   submit(): void {
     if (!this.fromAccount || !this.payee) { return; }
@@ -50,7 +50,7 @@ export class MakeTransferComponent implements OnDestroy {
     const transferRequest: TransferRequest = {
       fromAccountId: this.fromAccount.id,
       payeeId: this.payee.id,
-      amount: this.transferForm.get('amount').value
+      amount: this.amount
     };
     if (this.createTransferSubscription) {
       this.createTransferSubscription.unsubscribe();
@@ -58,7 +58,7 @@ export class MakeTransferComponent implements OnDestroy {
     this.createTransferSubscription = this.transferService.createTransaction(transferRequest)
       .subscribe(
         __ => this.stepper.next(),
-        err => console.error(err.toString())
+        err => console.error(err.toString())  // TODO: render a proper error message to uses
       );
   }
 
@@ -70,13 +70,24 @@ export class MakeTransferComponent implements OnDestroy {
 
   private setDefaultFromAccount(accounts: BankAccount[]): void {
     if (accounts && accounts.length > 1) {
-      this.transferForm.get('fromAccount').setValue(accounts[0]);
+      this.fromAccountControl.setValue(accounts[0]);
     }
   }
 
   private setDefaultPayee(payees: Payee[]): void {
     if (payees && payees.length > 1) {
-      this.transferForm.get('payee').setValue(payees[0]);
+      this.payeeControl.setValue(payees[0]);
     }
+  }
+
+  private validateBalance(fromAccount: BankAccount, withdrawAmount: number): ValidationErrors | null {
+    return fromAccount && withdrawAmount && fromAccount.balance - withdrawAmount < -500 ?
+      {insufficientFund: true} : null;
+  }
+}
+
+class AmountErrorMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    return (control.dirty || control.touched) && !control.valid || (form.errors && form.errors.insufficientFund);
   }
 }
