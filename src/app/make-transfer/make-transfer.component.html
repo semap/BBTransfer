@@ -3,34 +3,60 @@
   <span class="fill-remaining-space">Make Transfer</span>
 </mat-toolbar>
 <div class="container" novalidate>
-  <form [formGroup]="transferForm" (ngSubmit)="onSubmit()" class="form">
 
-    <mat-form-field class="form-element">
-      <mat-label>From Account</mat-label>
-      <mat-select placeholder="Select one" formControlName="fromAccount">
-        <mat-option *ngFor="let account of fromAccounts$ | async" [value]="account.id">
-          {{account.name}} - {{account.balance | currency}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  <mat-horizontal-stepper linear="true" #stepper>
+    <mat-step label="Data">
+      <form [formGroup]="transferForm" class="form">
 
-    <mat-form-field class="form-element">
-      <mat-label>To Account</mat-label>
-      <mat-select placeholder="Select one" formControlName="payee">
-        <mat-option *ngFor="let payee of payees$ | async" [value]="payee.id">
-          {{payee.merchant}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        <mat-form-field class="form-element">
+          <mat-label>From Account</mat-label>
+          <mat-select placeholder="Select one" formControlName="fromAccount">
+            <mat-option *ngFor="let account of fromAccounts$ | async" [value]="account">
+              {{account.name}} - {{account.balance | currency}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-    <mat-form-field class="form-element">
-      <mat-label>Amount</mat-label>
-      <input matInput formControlName="amount" type="number" placeholder="$ 0.00">
-    </mat-form-field>
+        <mat-form-field class="form-element">
+          <mat-label>To Account</mat-label>
+          <mat-select placeholder="Select one" formControlName="payee">
+            <mat-option *ngFor="let payee of payees$ | async" [value]="payee">
+              {{payee.merchant}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-    <div class="form-element">
-      <button mat-raised-button color="primary" type="submit" class="button">Submit</button>
-    </div>
+        <mat-form-field class="form-element">
+          <mat-label>Amount</mat-label>
+          <input matInput formControlName="amount" type="number" placeholder="$ 0.00">
+        </mat-form-field>
 
-  </form>
+        <div class="form-element">
+          <button mat-raised-button color="primary" type="submit" class="button" (click)="stepper.next()">Submit</button>
+        </div>
+
+      </form>
+    </mat-step>
+    <mat-step label="Preview">
+      <form [formGroup]="transferForm" class="form">
+        Transfer {{amount | currency}} from: {{fromAccount?.name}} to {{payee?.merchant}}
+        <div class="form-element">
+          <button mat-raised-button color="primary" type="submit" class="button" (click)="stepper.previous()">Back</button>
+        </div>
+        <div class="form-element">
+          <button mat-raised-button color="primary" type="submit" class="button" (click)="submit()">Transfer</button>
+        </div>
+
+      </form>
+    </mat-step>
+    <mat-step label="Done">
+      <form [formGroup]="transferForm" class="form">
+        <div class="form-element">
+          <button mat-raised-button color="primary" type="submit" class="button" (click)="stepper.reset()">Done</button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-horizontal-stepper>
+
+
 </div>

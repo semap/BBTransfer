@@ -36,6 +36,10 @@ export class TransferService {
       );
   }
 
+  findPayee(id: string): Payee {
+    return this.payees.value.find(payee => payee.id === id);
+  }
+
   private fetchTransactions(): Observable<Transaction[]> {
     return this.http.get<TransactionsData>('/assets/mock-transactions.json')
       .pipe(
@@ -87,9 +91,5 @@ export class TransferService {
 
     const newTransactions = [transaction].concat(this.transactions.value);
     this.transactions.next(newTransactions);
-  }
-
-  private findPayee(id: string): Payee {
-    return this.payees.value.find(payee => payee.id === id);
   }
 }

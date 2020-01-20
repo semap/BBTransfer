@@ -13,7 +13,7 @@ import {
   MatIconModule,
   MatInputModule,
   MatSelectModule,
-  MatSortModule,
+  MatSortModule, MatStepperModule,
   MatToolbarModule
 } from '@angular/material';
 
@@ -34,7 +34,8 @@ import {
     MatIconModule,
     MatSortModule,
     MatToolbarModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatStepperModule
   ],
   providers: [],
   bootstrap: [AppComponent]
