@@ -9,6 +9,10 @@ import {HttpClient} from '@angular/common/http';
 })
 export class TransferService {
 
+  readonly TRANSACTIONS_URL = '/assets/mock-transactions.json';
+  readonly FROM_ACCOUNTS_URL = '/assets/mock-from-accounts.json';
+  readonly PAYEES_URL = '/assets/mock-payees.json';
+
   private transactions = new BehaviorSubject<Transaction[]>([]);
   readonly transactions$: Observable<Transaction[]>;
 
@@ -41,7 +45,7 @@ export class TransferService {
   }
 
   private fetchTransactions(): Observable<Transaction[]> {
-    return this.http.get<TransactionsData>('/assets/mock-transactions.json')
+    return this.http.get<TransactionsData>(this.TRANSACTIONS_URL)
       .pipe(
         map(transactionData => transactionData.data),
         map( transactions => transactions.map(tx => ({...tx, amount: parseFloat(String(tx.amount)) * -1})))
@@ -49,14 +53,14 @@ export class TransferService {
   }
 
   private fetchFromAccounts(): Observable<BankAccount[]> {
-    return this.http.get<BankAccountsData>('/assets/mock-from-accounts.json')
+    return this.http.get<BankAccountsData>(this.FROM_ACCOUNTS_URL)
       .pipe(
         map(bankAccountsData => bankAccountsData.data)
       );
   }
 
   private fetchPayees(): Observable<Payee[]> {
-    return this.http.get<PayeesData>('/assets/mock-payees.json')
+    return this.http.get<PayeesData>(this.PAYEES_URL)
       .pipe(
         map(payeesData => payeesData.data)
       );

@@ -14,7 +14,7 @@ import {MatSort, Sort} from '@angular/material';
 export class RecentTransactionsComponent implements AfterViewInit {
   searchText: FormControl = new FormControl('');
 
-  @ViewChild(MatSort, {static: false})
+  @ViewChild(MatSort, {static: true})
   sort: MatSort;
 
   transactions$: Observable<Transaction[]>;

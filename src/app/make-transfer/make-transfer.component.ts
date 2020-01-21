@@ -1,10 +1,11 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, FormGroupDirective, NgForm, ValidationErrors, Validators} from '@angular/forms';
-import {BankAccount, Payee, TransferRequest} from '../services/entities';
+import {BankAccount, Payee, Transaction, TransferRequest} from '../services/entities';
 import {TransferService} from '../services/transfer.service';
 import {Unsubscribable} from 'rxjs/src/internal/types';
 import {ErrorStateMatcher, MatHorizontalStepper} from '@angular/material';
 import {tap} from 'rxjs/operators';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-make-transfer',
@@ -18,7 +19,7 @@ export class MakeTransferComponent implements OnDestroy {
   payees$ = this.transferService.payees$
     .pipe(tap( payees => this.setDefaultPayee(payees)));
 
-  @ViewChild(MatHorizontalStepper, {static: false})
+  @ViewChild(MatHorizontalStepper, {static: true})
   stepper: MatHorizontalStepper;
 
   matcher = new AmountErrorMatcher();
@@ -45,6 +46,17 @@ export class MakeTransferComponent implements OnDestroy {
   get amount(): number { return this.amountControl.value; }
 
   submit(): void {
+    if (this.createTransferSubscription) {
+      this.createTransferSubscription.unsubscribe();
+    }
+    this.createTransferSubscription = this.createTransaction()
+      .subscribe(
+        __ => { this.stepper.next(); this.amountControl.reset(); },
+        err => console.error(err.toString())  // TODO: render a proper error message to uses
+      );
+  }
+
+  createTransaction(): Observable<Transaction> {
     if (!this.fromAccount || !this.payee) { return; }
 
     const transferRequest: TransferRequest = {
@@ -52,14 +64,7 @@ export class MakeTransferComponent implements OnDestroy {
       payeeId: this.payee.id,
       amount: this.amount
     };
-    if (this.createTransferSubscription) {
-      this.createTransferSubscription.unsubscribe();
-    }
-    this.createTransferSubscription = this.transferService.createTransaction(transferRequest)
-      .subscribe(
-        __ => { this.stepper.next(); this.amountControl.reset(); },
-        err => console.error(err.toString())  // TODO: render a proper error message to uses
-      );
+    return this.transferService.createTransaction(transferRequest);
   }
 
   ngOnDestroy(): void {

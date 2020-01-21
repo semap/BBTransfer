@@ -60,7 +60,7 @@
             <h3>Preview:</h3>
             <p><span class="app-highlight">{{amount | currency}}</span> will be transferred from your <span class="app-highlight">{{fromAccount?.name}}</span> to
               <span class="app-highlight">{{payee?.merchant}}</span></p>
-            <img class="app-logo" [src]="payee.merchantLogo"/>
+            <img class="app-logo" [src]="payee?.merchantLogo"/>
             <h4>
               Click the <span class="app-highlight">{{"Transfer" | uppercase}}</span> button to make the transfer.
             </h4>
@@ -80,7 +80,7 @@
             <p><span class="app-highlight">{{amount | currency}}</span> has be transferred from your <span class="app-highlight">{{fromAccount?.name}}</span> to
               <span class="app-highlight">{{payee?.merchant}}</span>
             </p>
-            <p>Your new account balance of <span class="app-highlight">{{fromAccount.name}}</span> is <span class="app-highlight">{{fromAccount.balance | currency}}</span> </p>
+            <p>Your new account balance of <span class="app-highlight">{{fromAccount?.name}}</span> is <span class="app-highlight">{{fromAccount?.balance | currency}}</span> </p>
           </div>
           <div class="app-step-footer">
             <button mat-raised-button class="button" (click)="stepper.reset()">{{"Make Another Transfer" | uppercase}}</button>
