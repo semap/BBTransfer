@@ -86,7 +86,7 @@ export class TransferService {
   private updateAccountsAndTransactions(transaction: Transaction, accountId: string) {
     // update account balance
     const newAccounts = this.fromAccounts.value
-      .map(acc => acc.id === accountId ? {...acc, balance: acc.balance - +transaction.amount} : acc);
+      .map(acc => acc.id === accountId ? {...acc, balance: acc.balance + +transaction.amount} : acc);
     this.fromAccounts.next(newAccounts);
 
     const newTransactions = [transaction].concat(this.transactions.value);

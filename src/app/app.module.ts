@@ -16,6 +16,7 @@ import {
   MatSortModule, MatStepperModule,
   MatToolbarModule
 } from '@angular/material';
+import {FlexLayoutModule} from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import {
     HttpClientModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
+    FlexLayoutModule,
     MatInputModule,
     MatButtonModule,
     MatSelectModule,

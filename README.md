@@ -1,5 +1,9 @@
 # BbTransfer
 
+- This is a demo web application of transfer money from an account to a payee.
+- The demo app does not need a backend server to run.
+- This app contains some mock `from account`, `to account` and `recent transactions`. The mock JSON files are located in [assets](src/assets) folder
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.23.
 
 ## Development server

@@ -57,7 +57,7 @@ export class MakeTransferComponent implements OnDestroy {
     }
     this.createTransferSubscription = this.transferService.createTransaction(transferRequest)
       .subscribe(
-        __ => this.stepper.next(),
+        __ => { this.stepper.next(); this.amountControl.reset(); },
         err => console.error(err.toString())  // TODO: render a proper error message to uses
       );
   }

@@ -1,2 +1,11 @@
-<app-make-transfer></app-make-transfer>
-<app-recent-transactions></app-recent-transactions>
+<header>
+  <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="20px" class="app-content">
+    <div fxFlex="grow" fxFlexAlign="center" class="app-logo"></div>
+  </div>
+</header>
+<section>
+  <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" class="app-content">
+    <app-make-transfer></app-make-transfer>
+    <app-recent-transactions fxFlex="grow"></app-recent-transactions>
+  </div>
+</section>

@@ -1,28 +1,33 @@
-<h2>Transactions</h2>
-
-<mat-form-field>
-  <mat-label>Search</mat-label>
-  <input matInput [formControl]="searchText" placeholder="Search by typing..."/>
-  <mat-icon class="app-filter-clear" matSuffix *ngIf="searchText.value" (click)="searchText.reset()">close</mat-icon>
-</mat-form-field>
-
-<div matSort>
-  <tr>
-    <button mat-sort-header = "transactionDate">DATE</button>
-    <button mat-sort-header = "merchant">BENEFICIARY</button>
-    <button mat-sort-header = "amount">AMOUNT</button>
-  </tr>
+<mat-toolbar color="primary">
+  <img src="../../assets/suitcase.png" class="app-toolbar-icon">
+  <div fxFlex="grow" style="text-align: center">Recent Transactions</div>
+</mat-toolbar>
+<div class="app-filter">
+  <mat-form-field>
+    <mat-label>Search</mat-label>
+    <input matInput [formControl]="searchText" placeholder="Search by typing..."/>
+    <mat-icon class="app-filter-clear" matSuffix *ngIf="searchText.value" (click)="searchText.reset()">close</mat-icon>
+  </mat-form-field>
+  <div>Sort&nbsp;by&nbsp;&nbsp;</div>
+  <div matSort>
+    <tr>
+      <button mat-sort-header = "transactionDate" class="mat-raised-button">DATE</button>
+      <button mat-sort-header = "merchant" class="mat-raised-button">BENEFICIARY</button>
+      <button mat-sort-header = "amount" class="mat-raised-button">AMOUNT</button>
+    </tr>
+  </div>
 </div>
 <table mat-table>
-  <tr *ngFor = "let transaction of transactions$ | async">
+  <tr mat-row *ngFor = "let transaction of transactions$ | async" class="app-row">
     <td mat-cell class="app-column-date" [style.border-left-color]="transaction.categoryCode">
       {{transaction.transactionDate | date: 'MMM dd'}}
     </td>
     <td mat-cell class="app-column-logo">
       <img class="app-logo" [src]="transaction.merchantLogo"/>
     </td>
-    <td mat-cell class="app-column-logo">
-      {{transaction.merchant}}
+    <td mat-cell class="app-column-merchant">
+      <div class="app-merchant-name">{{transaction.merchant}}</div>
+      <div class="app-merchant-type">{{transaction.transactionType}}</div>
     </td>
     <td mat-cell class="app-column-amount">
       {{transaction.amount | currency }}

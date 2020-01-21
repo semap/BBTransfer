@@ -1,0 +1,5 @@
+@import '~@angular/material/theming';
+@import "./styles.scss";
+
+$primary: mat-color($bb-transfer-primary);
+$accent: mat-color($bb-transfer-accent);
